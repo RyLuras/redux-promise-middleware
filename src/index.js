@@ -7,17 +7,17 @@ const isPromise = action => {
 };
 
 export default store => next => action => {
-  if(!isPromise(action.payload)) return next(action);
+  if(!action.payload || !isPromise(action.payload)) return next(action);
 
   store.dispatch({ type: 'LOAD_START' });
 
-  action.payload
+  return action.payload
     .then(res => {
-      store.disparch({ type: action.type, payload: res });
+      next({ type: action.type, payload: res });
       return store.dispatch({ type: 'LOAD_END' });
     })
-    .catch(err => {
+    .catch(error => {
       store.dispatch({ type: 'LOAD_END' });
-      return store.disparch({ type: 'ERROR', payload: err });
+      store.dispatch({ type: 'ERROR', payload: error });
     });
 };
