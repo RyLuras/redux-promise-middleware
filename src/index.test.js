@@ -34,7 +34,7 @@ describe('promise middleware', () => {
       expect(reducer.mock.calls[2][1]).toEqual({ type: 'LOAD_END' });
       expect(reducer.mock.calls[3][1]).toEqual({
         payload: 'ERROR',
-        type: 'ERROR'
+        type: 'PROMISE_ERROR'
       });
     });
   });

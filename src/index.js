@@ -6,18 +6,23 @@ const isPromise = action => {
   }
 };
 
+export const LOAD_START = 'LOAD_START';
+export const LOAD_END = 'LOAD_END';
+export const PROMISE_ERROR = 'PROMISE_ERROR';
+
 export default store => next => action => {
-  if(!action.payload || !isPromise(action.payload)) return next(action);
+  const { type, payload } = action;
+  if(!payload || !isPromise(payload)) return next(action);
 
-  store.dispatch({ type: 'LOAD_START' });
+  store.dispatch({ type: LOAD_START });
 
-  return action.payload
+  return payload
     .then(res => {
-      next({ type: action.type, payload: res });
-      return store.dispatch({ type: 'LOAD_END' });
+      next({ type: type, payload: res });
+      return store.dispatch({ type: LOAD_END });
     })
     .catch(error => {
-      store.dispatch({ type: 'LOAD_END' });
-      store.dispatch({ type: 'ERROR', payload: error });
+      store.dispatch({ type: LOAD_END });
+      return store.dispatch({ type: PROMISE_ERROR, payload: error });
     });
 };
